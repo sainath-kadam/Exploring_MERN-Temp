@@ -1,51 +1,29 @@
-// // app.js
-// const express = require('express');
-// const connectDB = require('./config/db');
-// var cors = require('cors');
-// // const router = express.Router();
-// // routes
-// // const books = require('./routes/api/books');
-
-// const app = express();
-// // const errorHandler = require('./Middlewares/errorHandler');
-// // const dataRoutes = require('./Routes/dataRoutes');
-
-// // Connect Database connect hora 
-// connectDB();
- 
-// // cors &  Init Middleware use karte hai 
-// app.use(cors({ origin: true, credentials: true }));
-// app.use(express.json({ extended: false }));
-
-// // use Routes
-// // app.use('/api/data', dataRoutes);
-
-// // Error handler middleware (should be the last middleware)
-// // app.use(errorHandler);
-
-// // niche wala must hai 
-// const port = process.env.PORT || 8082;
-// app.listen(port, () => console.log(`Server running on port ${port}`));
-
-// config/db.js
-
-// server.js (or app.js)
 const express = require('express');
 const connectDB = require('./config/db');
-const cors = require('cors');
+
+const cors = require('cors');  // It helps in controlling which external origins are 
+                                //allowed to access resources (like APIs) on your server.
+
 const app = express();
+
+app.use(cors());
+app.use(express.json()); // It is essential when handling JSON data sent by clients, particularly in POST or PUT requests, 
+
+
 
 // Connect Database
 connectDB();
 
-// cors & Init Middleware
-app.use(cors()); // You can specify allowed origins here if needed
-app.use(express.json({ extended: false }));
 
-// Add your routes here (e.g., dataRoutes)
+// niche wale do jo hai us me hum path dere  lekin folder ka nam likhana jaruri hai  aap.use me 
+const articlesRouter = require('./routes/articles');
+app.use('/articles', articlesRouter);
 
-// Error handler middleware (should be the last middleware)
-// app.use(errorHandler);
 
-const port = process.env.PORT || 8082;
+// below will handle error if we got any error while dealing with path
+const errorMiddleware = require('./middleware/error');
+app.use(errorMiddleware);
+
+const port = process.env.PORT || 3000;
+
 app.listen(port, () => console.log(`Server running on port ${port}`));
